@@ -5,120 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="google-adsense-account" content="ca-pub-2314340578474791" />
     <title>Adobe Flash Games Directory</title>
-
     <link rel="stylesheet" type="text/css" href="style.css" />
-
-    <script>
-      window.RufflePlayer = window.RufflePlayer || {};
-      window.RufflePlayer.config = {
-        autoplay: "on",
-        splashScreen: false,
-        unmuteOverlay: "hidden",
-        quality: "medium",
-        backgroundColor: "#000000"
-      };
-    </script>
-    <script src="https://unpkg.com/@ruffle-rs/ruffle"></script>
-
     <script
       async
       src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2314340578474791"
       crossorigin="anonymous"
     ></script>
-
-    <style>
-      #player-section {
-        margin-top: 24px;
-      }
-
-      #player-shell {
-        background: #111;
-        border: 1px solid #ff5a91;
-        border-radius: 8px;
-        overflow: hidden;
-      }
-
-      #player-toolbar {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 12px;
-        flex-wrap: wrap;
-        padding: 14px 16px;
-        background: #1a1a1a;
-        border-bottom: 1px solid #2f2f2f;
-      }
-
-      #player-toolbar h3 {
-        margin: 0;
-        color: #ffffff;
-        font-size: 1.1rem;
-      }
-
-      #player-status {
-        margin: 0;
-        color: #b0b0b0;
-        font-size: 0.95rem;
-      }
-
-      #player-actions {
-        display: flex;
-        gap: 10px;
-        flex-wrap: wrap;
-      }
-
-      #player-actions button {
-        cursor: pointer;
-        border: 1px solid #ff5a91;
-        background: transparent;
-        color: #ff5a91;
-        padding: 0.65rem 0.9rem;
-        border-radius: 6px;
-        font-weight: 600;
-        transition: all 0.2s ease;
-      }
-
-      #player-actions button:hover {
-        background: #ff5a91;
-        color: #121212;
-      }
-
-      #ruffle-container {
-        width: 100%;
-        height: min(75vh, 900px);
-        background: #000;
-      }
-
-      #ruffle-container > * {
-        width: 100%;
-        height: 100%;
-        display: block;
-      }
-
-      .card p {
-        outline: none;
-      }
-
-      .card p:focus {
-        box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px #ff5a91;
-      }
-
-      @media (max-width: 768px) {
-        #ruffle-container {
-          height: 60vh;
-        }
-
-        #player-toolbar {
-          align-items: flex-start;
-        }
-      }
-    </style>
   </head>
 
   <body>
     <div id="container">
       <h1>Adobe Flash Games Directory</h1>
-
       <div class="center">
         <button
           class="btn-donate"
@@ -133,43 +30,35 @@
           Hire Me!
         </button>
       </div>
-
       <br />
-
       <p>
         Here you can find a collection of Adobe Flash games that you can play
-        online for free. Click a game below to launch it directly in the page
-        with Ruffle.
+        online for free. Please note that modern browsers no longer support
+        Flash content, so you will need to use a Flash Player emulator or
+        standalone Flash Player to run these games.
       </p>
 
+      <!-- Card for all games -->
       <h2>Available Games</h2>
       <div class="card" id="games-list">
         <p>Loading games...</p>
       </div>
-
-      <section id="player-section" hidden>
-        <h2>Game Player</h2>
-        <div id="player-shell">
-          <div id="player-toolbar">
-            <div>
-              <h3 id="player-title">No game selected</h3>
-              <p id="player-status">Choose a game from the list above.</p>
-            </div>
-            <div id="player-actions">
-              <button type="button" onclick="reloadCurrentGame()">Reload</button>
-              <button type="button" onclick="closePlayer()">Close</button>
-            </div>
-          </div>
-          <div id="ruffle-container"></div>
-        </div>
-      </section>
 
       <h2>About Flash Games</h2>
       <p>
         Flash games were a huge part of the early internet culture, providing
         endless entertainment for users around the world. Though Flash is no
         longer supported by modern browsers, these games can still be played
-        using emulators like Ruffle.
+        using standalone Flash Players or emulators like Ruffle.
+      </p>
+      <p>
+        <strong>Installation:</strong> To play these games, download and install
+        the Flash Player provided in the repository (<a
+          href="./flashplayer_32_sa.exe"
+          >Flash Player</a
+        >
+        or <a href="./flashplayer_32_sa_debug.exe">Flash Player</a>). You can
+        also use emulators to keep enjoying these classics.
       </p>
       <p>
         <strong>Controls:</strong> Most games utilize simple keyboard and mouse
@@ -180,13 +69,11 @@
         preserve the history of Flash games. All game rights remain with their
         respective creators.
       </p>
-
       <div class="center">
         <p>
           <strong>Copyright ©<span id="year"></span> @AmmarSAA.</strong>
         </p>
       </div>
-
       <div class="center">
         <button
           type="button"
@@ -209,81 +96,13 @@
         </button>
       </div>
     </div>
-
     <script>
       document.querySelector("#year").textContent = new Date().getFullYear();
 
-      let currentGame = null;
-
-      function toPascalCase(filename) {
-        const nameWithoutExt = filename.replace(/\.swf$/i, "");
-        return nameWithoutExt
-          .split("-")
-          .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-          .join(" ");
-      }
-
-      async function loadGame(fileName, displayName) {
-        const playerSection = document.getElementById("player-section");
-        const ruffleContainer = document.getElementById("ruffle-container");
-        const playerTitle = document.getElementById("player-title");
-        const playerStatus = document.getElementById("player-status");
-
-        playerSection.hidden = false;
-        playerTitle.textContent = displayName;
-        playerStatus.textContent = `Loading ${displayName}...`;
-        ruffleContainer.innerHTML = "";
-
-        if (!window.RufflePlayer || !window.RufflePlayer.newest) {
-          playerStatus.textContent = "Ruffle failed to load.";
-          return;
-        }
-
-        try {
-          const ruffle = window.RufflePlayer.newest();
-          const player = ruffle.createPlayer();
-
-          player.style.width = "100%";
-          player.style.height = "100%";
-
-          ruffleContainer.appendChild(player);
-
-          currentGame = {
-            fileName,
-            displayName
-          };
-
-          await player.ruffle().load(`./${fileName}`);
-
-          playerStatus.textContent = `Now playing: ${displayName}`;
-          playerSection.scrollIntoView({
-            behavior: "smooth",
-            block: "start"
-          });
-        } catch (error) {
-          console.error(error);
-          playerStatus.textContent = `Failed to load ${displayName}.`;
-        }
-      }
-
-      function reloadCurrentGame() {
-        if (!currentGame) return;
-        loadGame(currentGame.fileName, currentGame.displayName);
-      }
-
-      function closePlayer() {
-        document.getElementById("ruffle-container").innerHTML = "";
-        document.getElementById("player-section").hidden = true;
-        document.getElementById("player-title").textContent = "No game selected";
-        document.getElementById("player-status").textContent =
-          "Choose a game from the list above.";
-        currentGame = null;
-      }
-
       async function fetchGames() {
-        const repoOwner = "xxblurazxx";
-        const repoName = "Flash-Games-Directory";
-        const path = "";
+        const repoOwner = "AmmarSAA";
+        const repoName = "flash-games-directory";
+        const path = ""; // root or folder containing .swf files
 
         const apiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${path}`;
 
@@ -292,36 +111,32 @@
           if (!response.ok) throw new Error("Failed to fetch file list");
 
           const files = await response.json();
-          const swfFiles = files.filter((file) =>
-            file.name.toLowerCase().endsWith(".swf")
-          );
+
+          // Filter .swf files only
+          const swfFiles = files.filter((file) => file.name.endsWith(".swf"));
+
+          // Utility to convert hyphen-case filename (without extension) to Pascal Case
+          function toPascalCase(filename) {
+            const nameWithoutExt = filename.replace(/\.swf$/i, "");
+            return nameWithoutExt
+              .split("-")
+              .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+              .join(" ");
+          }
 
           const container = document.getElementById("games-list");
-          container.innerHTML = "";
+          container.innerHTML = ""; // Clear loading text
 
           swfFiles.forEach((file) => {
             const displayName = toPascalCase(file.name);
+            const link = document.createElement("a");
+            link.href = `./${file.name}`;
+            link.target = "_blank";
+            link.textContent = displayName;
 
-            const card = document.createElement("p");
-            card.setAttribute("role", "button");
-            card.setAttribute("tabindex", "0");
-            card.setAttribute("aria-label", `Play ${displayName}`);
-
-            const span = document.createElement("span");
-            span.textContent = displayName;
-
-            const openGame = () => loadGame(file.name, displayName);
-
-            card.appendChild(span);
-            card.addEventListener("click", openGame);
-            card.addEventListener("keydown", (event) => {
-              if (event.key === "Enter" || event.key === " ") {
-                event.preventDefault();
-                openGame();
-              }
-            });
-
-            container.appendChild(card);
+            const p = document.createElement("p");
+            p.appendChild(link);
+            container.appendChild(p);
           });
 
           if (swfFiles.length === 0) {
